@@ -1,0 +1,223 @@
+import 'package:flutter/material.dart';
+
+// Função principal que inicia o app
+void main(){
+  runApp(MyApp());
+}
+
+// MyApp é um StatefulWidget porque o quiz muda de estado (pontuação, perguntas, etc.)
+class MyApp extends StatefulWidget{
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+// Estado do MyApp onde a lógica do quiz acontece
+class _MyAppState extends State<MyApp>{
+
+  // Lista com as perguntas, opções, respostas corretas e imagens
+  final List<Map<String, dynamic>> perguntas = [
+    {
+      'pergunta': 'Qual o Pokemon acima?',
+      'opcoes': ['Pichu', 'Pikachu', 'Raichu'],
+      'respostaCorreta': 'Pikachu' ,
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png'
+    },
+    {
+      'pergunta': 'Qual é o Pokémon número #001 da Pokédex?',
+      'opcoes': ['Bulbasaur', 'Charmander', 'Pikachu'],
+      'respostaCorreta': 'Bulbasaur',
+      'imagem': 'https://pngimg.com/uploads/pokemon/pokemon_PNG149.png'
+    },
+    {
+      'pergunta': 'Qual desses Pokémon é do tipo Planta?',
+      'opcoes': ['Oddish', 'Growlithe', 'Onix'],
+      'respostaCorreta': 'Oddish',
+    },
+    {
+      'pergunta': 'Quem é conhecido como o Pokémon Lendário do Tempo?',
+      'opcoes': ['Palkia', 'Dialga', 'Arceus'],
+      'respostaCorreta': 'Dialga',
+    },
+    {
+      'pergunta': 'Qual é o lendário que representa o céu?',
+      'opcoes': ['Rayquaza', 'Kyogre', 'Groudon'],
+      'respostaCorreta': 'Rayquaza',
+    },
+    {
+      'pergunta': 'Qual é a evolução do Eevee para o tipo Fogo?',
+      'opcoes': ['Jolteon', 'Vaporeon', 'Flareon'],
+      'respostaCorreta': 'Flareon',
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full//133.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Gengar?',
+      'opcoes': ['Fantasma/Veneno', 'Sombrio/Fantasma', 'Veneno/Psíquico'],
+      'respostaCorreta': 'Fantasma/Veneno',
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full//094.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Mimikyu?',
+      'opcoes': ['Fantasma/Fada', 'Sombrio/Fantasma', 'Sombrio/Psíquico'],
+      'respostaCorreta': 'Fantasma/Fada',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/778.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Sudowoodo',
+      'opcoes': ['Terra', 'Pedra', 'Planta'],
+      'respostaCorreta': 'Pedra',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/185.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Trapinch',
+      'opcoes': ['Terra', 'Pedra', 'Inseto'],
+      'respostaCorreta': 'Terra',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/328.png'
+    }
+  ];
+
+  // Variáveis de estado do quiz
+  int perguntaAtual = 0;         // Índice da pergunta atual
+  int pontos = 0;                // Pontuação do jogador
+  String? mensagem;             // Mensagem de feedback (correta ou errada)
+  bool quizFinalizado = false; // Indica se o quiz terminou
+
+  // Função para verificar a resposta selecionada
+  void verificarResposta(String respostaEscolhida){
+    String respostaCorreta = perguntas[perguntaAtual]['respostaCorreta'];
+
+    // Atualiza o estado conforme a resposta
+    setState(() {
+      if (respostaEscolhida == respostaCorreta){
+        pontos++;
+        mensagem = "Resposta Certa! +1";
+      } else {
+        mensagem = "Resposta Errada!";
+      }
+    });
+
+    // Espera 2 segundos e avança para próxima pergunta ou finaliza
+    Future.delayed(Duration(seconds: 2), (){
+      setState(() {
+        mensagem = null;
+        if (perguntaAtual < perguntas.length - 1){
+          perguntaAtual++;
+        } else {
+          quizFinalizado = true;
+        }
+      }); 
+    });
+  }
+
+  // Função que reinicia o quiz
+  void reiniciarQuiz(){
+    setState(() {
+      perguntaAtual = 0;
+      pontos = 0;
+      quizFinalizado = false;
+      mensagem = null;
+    });
+  }
+
+  // Método de construção da interface
+  @override
+  Widget build(BuildContext context){
+    final perguntaAtualData = perguntas[perguntaAtual]; // Dados da pergunta atual
+    return MaterialApp(
+      theme: ThemeData.dark(),
+      darkTheme: ThemeData.dark(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Quiz Pokemon",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.yellow, 
+        ),
+        body: Center(
+          child: quizFinalizado 
+          // Tela final quando o quiz acaba
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Parabéns! , você terminou o quiz",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24)
+                ),
+                SizedBox(height: 20),
+                Text("Sua pontuação: $pontos/${perguntas.length}"),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: reiniciarQuiz,
+                  child: Text('Recomeçar')
+                )
+              ],
+            )
+          // Tela com a pergunta e as opções
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Exibe imagem da pergunta ou uma imagem padrão
+                if (perguntaAtualData.containsKey('imagem'))
+                  Image.network(
+                    perguntaAtualData['imagem'],
+                    width: 200,
+                    height: 150,
+                  )
+                else
+                  Image.network(
+                    "https://cdn-icons-png.flaticon.com/512/188/188987.png",
+                    width: 200,
+                    height: 150,
+                  ),
+                SizedBox(height: 20),
+
+                // Texto da pergunta
+                Text(
+                  perguntas[perguntaAtual]["pergunta"],
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+
+                // Botões com as opções de resposta
+                ...perguntas[perguntaAtual]["opcoes"].map<Widget>((opcao){
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow
+                      ),
+                      onPressed: mensagem == null ? () => verificarResposta(opcao) : null,
+                      child: Text(
+                        opcao,
+                        style: TextStyle(color: Colors.black),
+                      )
+                    )
+                  );
+                }).toList(),
+                SizedBox(height: 20),
+
+                // Mostra mensagem de acerto ou erro
+                if (mensagem != null)
+                  Text(
+                    mensagem!,
+                    style: TextStyle(
+                      color: mensagem == "Resposta Certa! +1"
+                          ? Colors.green 
+                          : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+
+                SizedBox(height: 20),
+                
+                // Pontuação atual do jogador
+                Text('Pontuação: $pontos')
+              ],
+            )
+        ),
+      )
+    );
+  }
+}
