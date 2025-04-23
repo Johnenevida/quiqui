@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 // Função principal que inicia o app
