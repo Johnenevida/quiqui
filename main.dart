@@ -1,205 +1,94 @@
-// import 'package:flutter/material.dart';
 
-// void main(){
-//   runApp(MyApp());
-// }
-// //  StatelessWidget não muda estado
-// //  StatefulWidget muda o estado
-// //  setState tem a função anônima: (() {         }) e muda o estado dos elementos;
-// class MyApp extends StatefulWidget{
-//   @override
-//   _MyAppState createState() => _MyAppState();
-// }
+import 'package:flutter/material.dart';
 
-// class _MyAppState extends State<MyApp>{
-//   final List<Map<String, dynamic>> perguntas = [ //São as perguntas
-//     {
-//       'pergunta': 'Qual a capital do Brasil?',
-//       'opcoes': ['São Paulo', 'Brasília', 'Rio de Janeiro'],
-//       'respostaCorreta': 'Brasília' 
-//     }
-//   ];
-//   int perguntaAtual = 0; //inicializa os valores do quiz
-//   int pontos = 0;
-//   String? mensagem;
-//   bool quizFinalizado = false;
-
-//   // funçao que verifica as respostas
-//   void verificarResposta(String respostaEscolhida){
-//     String respostaCorreta = perguntas[perguntaAtual]['respostaCorreta'];
-
-//     setState(() {
-//       if (respostaEscolhida == respostaCorreta){
-//       pontos++;
-//         mensagem = "Resposta Certa! +1";
-//       } else {
-//         mensagem = "Resposta Errada!";
-//       }
-//     });
-
-//     // espera 2 segundos para proxima pergunta
-//     Future.delayed(Duration(seconds : 2), (){
-//     setState(() {
-//       mensagem = null;
-//       if (perguntaAtual < perguntas.length - 1){
-//         perguntaAtual++;
-//       } else {
-//         quizFinalizado = true;
-//       } //avança para proxima se for menor que a lista toda
-//     }); 
-//     });
-//   }
-  
-//   //metodo para reiniciar o quiz
-//   void reiniciarQuiz(){
-//     setState(() {
-//       perguntaAtual = 0;
-//       pontos = 0;
-//       quizFinalizado = false;
-//       mensagem = null;
-//     });
-//   }
-//  @override
-//   Widget build(BuildContext context){
-//     return MaterialApp(
-//       theme: ThemeData.dark(),
-//       darkTheme: ThemeData.dark(),
-//       home: Scaffold(
-//         appBar: AppBar(
-//         title: Text("Quiz Pokemon")),
-//         body: Center(
-//           child: quizFinalizado ? Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Text(
-//                 "Parabéns! , você terminou o quiz",
-//                 textAlign: TextAlign.center,
-//                 style: TextStyle(fontSize: 24)
-//               ),
-//               SizedBox( height: 20),
-//               Text(
-//                 "Sua pontuação: $pontos/${perguntas.length}"
-//               ),
-//               SizedBox(height: 20),
-//               ElevatedButton(
-//                 onPressed: reiniciarQuiz, child: Text('Recomeçar'))
-//             ],
-//           ) : Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Image.network("https://cdn-icons-png.flaticon.com/512/188/188987.png", width: 100, height: 100),
-//               SizedBox(height: 20),
-//               Text(
-//                 perguntas[perguntaAtual]["pergunta"],
-//                 textAlign: TextAlign.center,
-//               ),
-//               SizedBox(height: 20),
-//               ...perguntas[perguntaAtual]["opcoes"].map<Widget>((opcao){
-//                 return Padding(
-//                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-//                   child: ElevatedButton(
-//                     onPressed: mensagem == null ? () => verificarResposta(opcao) : null,
-//                     child: Text(opcao)
-//                     )
-//                 );
-//               }).toList(),
-//               SizedBox(height: 20),
-//               if (mensagem != null)
-//                 Text(mensagem!),
-//                 SizedBox(height: 20),
-//                 Text('Pontuação: $pontos')
-//             ],
-//           )
-//         ),
-//       )
-//     );
-//   }
-// }
-
- import 'package:flutter/material.dart';
-
-void main() {
+// Função principal que inicia o app
+void main(){
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+// MyApp é um StatefulWidget porque o quiz muda de estado (pontuação, perguntas, etc.)
+class MyApp extends StatefulWidget{
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+// Estado do MyApp onde a lógica do quiz acontece
+class _MyAppState extends State<MyApp>{
+
+  // Lista com as perguntas, opções, respostas corretas e imagens
   final List<Map<String, dynamic>> perguntas = [
     {
-      'pergunta': 'Qual a capital do Brasil?',
-      'opcoes': ['São Paulo', 'Brasília', 'Rio de Janeiro'],
-      'respostaCorreta': 'Brasília'
+      'pergunta': 'Qual o Pokemon acima?',
+      'opcoes': ['Pichu', 'Pikachu', 'Raichu'],
+      'respostaCorreta': 'Pikachu' ,
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png'
     },
     {
       'pergunta': 'Qual é o Pokémon número #001 da Pokédex?',
       'opcoes': ['Bulbasaur', 'Charmander', 'Pikachu'],
       'respostaCorreta': 'Bulbasaur',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png'
-    },
-    {
-      'pergunta': 'Qual tipo do Pikachu?',
-      'opcoes': ['Água', 'Fogo', 'Elétrico'],
-      'respostaCorreta': 'Elétrico',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png'
-    },
-    {
-      'pergunta': 'Qual evolução do Charmander?',
-      'opcoes': ['Charmeleon', 'Charizard', 'Charjabug'],
-      'respostaCorreta': 'Charmeleon',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png'
-    },
-    {
-      'pergunta': 'Qual é o tipo principal do Squirtle?',
-      'opcoes': ['Elétrico', 'Fogo', 'Água'],
-      'respostaCorreta': 'Água',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png'
+      'imagem': 'https://pngimg.com/uploads/pokemon/pokemon_PNG149.png'
     },
     {
       'pergunta': 'Qual desses Pokémon é do tipo Planta?',
       'opcoes': ['Oddish', 'Growlithe', 'Onix'],
       'respostaCorreta': 'Oddish',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/043.png'
     },
     {
       'pergunta': 'Quem é conhecido como o Pokémon Lendário do Tempo?',
       'opcoes': ['Palkia', 'Dialga', 'Arceus'],
       'respostaCorreta': 'Dialga',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/483.png'
     },
     {
-      'pergunta': 'Qual é o tipo do Gengar?',
-      'opcoes': ['Fantasma/Veneno', 'Sombrio/Fantasma', 'Veneno/Psíquico'],
-      'respostaCorreta': 'Fantasma/Veneno',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/094.png'
+      'pergunta': 'Qual é o lendário que representa o céu?',
+      'opcoes': ['Rayquaza', 'Kyogre', 'Groudon'],
+      'respostaCorreta': 'Rayquaza',
     },
     {
       'pergunta': 'Qual é a evolução do Eevee para o tipo Fogo?',
       'opcoes': ['Jolteon', 'Vaporeon', 'Flareon'],
       'respostaCorreta': 'Flareon',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/136.png'
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full//133.png'
     },
     {
-      'pergunta': 'Qual é o lendário que representa o céu e é verde?',
-      'opcoes': ['Rayquaza', 'Kyogre', 'Groudon'],
-      'respostaCorreta': 'Rayquaza',
-      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/384.png'
+      'pergunta': 'Qual é o tipo do Gengar?',
+      'opcoes': ['Fantasma/Veneno', 'Sombrio/Fantasma', 'Veneno/Psíquico'],
+      'respostaCorreta': 'Fantasma/Veneno',
+      'imagem': 'https://assets.pokemon.com/assets/cms2/img/pokedex/full//094.png'
     },
+    {
+      'pergunta': 'Qual é o tipo do Mimikyu?',
+      'opcoes': ['Fantasma/Fada', 'Sombrio/Fantasma', 'Sombrio/Psíquico'],
+      'respostaCorreta': 'Fantasma/Fada',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/778.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Sudowoodo',
+      'opcoes': ['Terra', 'Pedra', 'Planta'],
+      'respostaCorreta': 'Pedra',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/185.png'
+    },
+    {
+      'pergunta': 'Qual é o tipo do Trapinch',
+      'opcoes': ['Terra', 'Pedra', 'Inseto'],
+      'respostaCorreta': 'Terra',
+      'imagem': 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/328.png'
+    }
   ];
 
-  int perguntaAtual = 0;
-  int pontos = 0;
-  String? mensagem;
-  bool quizFinalizado = false;
+  // Variáveis de estado do quiz
+  int perguntaAtual = 0;         // Índice da pergunta atual
+  int pontos = 0;                // Pontuação do jogador
+  String? mensagem;             // Mensagem de feedback (correta ou errada)
+  bool quizFinalizado = false; // Indica se o quiz terminou
 
-  void verificarResposta(String respostaEscolhida) {
+  // Função para verificar a resposta selecionada
+  void verificarResposta(String respostaEscolhida){
     String respostaCorreta = perguntas[perguntaAtual]['respostaCorreta'];
 
+    // Atualiza o estado conforme a resposta
     setState(() {
-      if (respostaEscolhida == respostaCorreta) {
+      if (respostaEscolhida == respostaCorreta){
         pontos++;
         mensagem = "Resposta Certa! +1";
       } else {
@@ -207,19 +96,21 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    Future.delayed(Duration(seconds: 2), () {
+    // Espera 2 segundos e avança para próxima pergunta ou finaliza
+    Future.delayed(Duration(seconds: 2), (){
       setState(() {
         mensagem = null;
-        if (perguntaAtual < perguntas.length - 1) {
+        if (perguntaAtual < perguntas.length - 1){
           perguntaAtual++;
         } else {
           quizFinalizado = true;
         }
-      });
+      }); 
     });
   }
 
-  void reiniciarQuiz() {
+  // Função que reinicia o quiz
+  void reiniciarQuiz(){
     setState(() {
       perguntaAtual = 0;
       pontos = 0;
@@ -228,82 +119,106 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  // Método de construção da interface
   @override
-  Widget build(BuildContext context) {
-    final perguntaAtualData = perguntas[perguntaAtual];
+  Widget build(BuildContext context){
+    final perguntaAtualData = perguntas[perguntaAtual]; // Dados da pergunta atual
     return MaterialApp(
       theme: ThemeData.dark(),
+      darkTheme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(title: Text("Quiz Pokémon")),
-        body: Center(
-          child: quizFinalizado
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Parabéns! Você terminou o quiz",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24),
-                    ),
-                    SizedBox(height: 20),
-                    Text("Sua pontuação: $pontos/${perguntas.length}"),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: reiniciarQuiz,
-                      child: Text('Recomeçar'),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (perguntaAtualData.containsKey('imagem'))
-                      Image.network(
-                        perguntaAtualData['imagem'],
-                        width: 100,
-                        height: 100,
-                      )
-                    else
-                      Image.network(
-                        "https://cdn-icons-png.flaticon.com/512/188/188987.png",
-                        width: 100,
-                        height: 100,
-                      ),
-                    SizedBox(height: 20),
-                    Text(
-                      perguntaAtualData["pergunta"],
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    ...perguntaAtualData["opcoes"].map<Widget>((opcao) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: ElevatedButton(
-                          onPressed: mensagem == null
-                              ? () => verificarResposta(opcao)
-                              : null,
-                          child: Text(opcao),
-                        ),
-                      );
-                    }).toList(),
-                    SizedBox(height: 20),
-                    if (mensagem != null) ...[
-                      Text(
-                        mensagem!,
-                        style: TextStyle(
-                          color: mensagem == "Resposta Certa! +1"
-                              ? Colors.green
-                              : Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
-                    Text('Pontuação: $pontos'),
-                  ],
-                ),
+        appBar: AppBar(
+          title: Text(
+            "Quiz Pokemon",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.yellow, 
         ),
-      ),
+        body: Center(
+          child: quizFinalizado 
+          // Tela final quando o quiz acaba
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Parabéns! , você terminou o quiz",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24)
+                ),
+                SizedBox(height: 20),
+                Text("Sua pontuação: $pontos/${perguntas.length}"),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: reiniciarQuiz,
+                  child: Text('Recomeçar')
+                )
+              ],
+            )
+          // Tela com a pergunta e as opções
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Exibe imagem da pergunta ou uma imagem padrão
+                if (perguntaAtualData.containsKey('imagem'))
+                  Image.network(
+                    perguntaAtualData['imagem'],
+                    width: 200,
+                    height: 150,
+                  )
+                else
+                  Image.network(
+                    "https://cdn-icons-png.flaticon.com/512/188/188987.png",
+                    width: 200,
+                    height: 150,
+                  ),
+                SizedBox(height: 20),
+
+                // Texto da pergunta
+                Text(
+                  perguntas[perguntaAtual]["pergunta"],
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+
+                // Botões com as opções de resposta
+                ...perguntas[perguntaAtual]["opcoes"].map<Widget>((opcao){
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow
+                      ),
+                      onPressed: mensagem == null ? () => verificarResposta(opcao) : null,
+                      child: Text(
+                        opcao,
+                        style: TextStyle(color: Colors.black),
+                      )
+                    )
+                  );
+                }).toList(),
+                SizedBox(height: 20),
+
+                // Mostra mensagem de acerto ou erro
+                if (mensagem != null)
+                  Text(
+                    mensagem!,
+                    style: TextStyle(
+                      color: mensagem == "Resposta Certa! +1"
+                          ? Colors.green 
+                          : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+
+                SizedBox(height: 20),
+                
+                // Pontuação atual do jogador
+                Text('Pontuação: $pontos')
+              ],
+            )
+        ),
+      )
     );
   }
 }
